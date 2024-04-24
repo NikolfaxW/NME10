@@ -1,46 +1,45 @@
 import numpy as np
 import sys
+import matplotlib.pyplot as plt
 
 
 def print_hi(name):
     print(f'Hi, {name}')
 
+def f(x,y): # ODE
+    return (1 + np.cos(x)) * y
 
-def f(x):
-    result = (-1 / 10) * x + (1 / 50) * x * x + 13
-    return result
-
-
-def first_forward_derivation_f(x, h):
-    result = (f(x+h) - f(x))/h
-    return result
 
 
 if __name__ == '__main__':
-    borders = np.array([-50., 50.])
-    doLookForMinimum = True
-    tolerance = 1000000*sys.float_info.epsilon
-    while (True):
-        c = (borders[0] + borders[1]) / 2
-        f_c = first_forward_derivation_f(c,tolerance/50)
-        if (doLookForMinimum):
-            if (f_c < -tolerance):
-                borders[0] = c
-            else:
-                if (f_c > tolerance):
-                    borders[1] = c
-                else:
-                    if (f_c >= -tolerance and f_c <= tolerance):
-                        break
-        else:
-            if (f_c > -tolerance):
-                borders[0] = c
-            else:
-                if (f_c < tolerance):
-                    borders[1] = c
-                else:
-                    if (f_c >= -tolerance and f_c <= tolerance):
-                        break
+    uRK = 1  # Runge-Kutta
+    T = 5 # final time
+    tA = np.linspace(0, T, num=500) # time steps for plotting
+    # step size
+    h = 0.1
+    #exact solution
+    exact = np.exp(tA + np.sin(tA))
 
-    print("The extrem is at x = ", c)
-    # 2.5 is right
+    fig, ax = plt.subplots(figsize=(15, 4.5))
+    ax.plot(tA, exact, linewidth=2)  # print
+
+    t = 0
+    while t < T:
+        # Runge-Kutta 3. rad
+        ax.plot(t, uRK, marker=".", color='r')
+        # spocteme novou hodnotu promenne uRK
+        k1 = h*f(t, uRK)
+        k2 = (h/2)*f(t + h, uRK + k1)
+        k3 =  (h/2)*f(t, uRK)
+
+        uRK = uRK + k1 + k2 - k3
+
+        t = t + h
+
+    ax.set_ylabel(r'$\dfrac{\mathrm{d}N}{\mathrm{d}t}$')
+    ax.set_xlabel(r'$t$')
+
+
+    fig.show()
+
+
