@@ -13,7 +13,7 @@ def f(x,y): # ODE
 
 if __name__ == '__main__':
     uRK = 1  # Runge-Kutta
-    T = 5 # final time
+    T = 50 # final time
     tA = np.linspace(0, T, num=500) # time steps for plotting
     # step size
     h = 0.1
@@ -27,12 +27,17 @@ if __name__ == '__main__':
     while t < T:
         # Runge-Kutta 3. rad
         ax.plot(t, uRK, marker=".", color='r')
-        # spocteme novou hodnotu promenne uRK
+        ABS =  abs(uRK -  np.exp(t + np.sin(t)))
+        ax.plot(t, ABS, marker=".", color='g')
+
+        # computing uRK
         k1 = h*f(t, uRK)
         k2 = (h/2)*f(t + h, uRK + k1)
         k3 =  (h/2)*f(t, uRK)
-
         uRK = uRK + k1 + k2 - k3
+
+
+
 
         t = t + h
 
